@@ -8,7 +8,7 @@ export class UserRepositoryInMemory implements UserRepository {
   async create(user: User): Promise<void> {
     this.users.push(user);
   }
-  findByEmail(email: string): Promise<User | null> {
+  findByLogin(login: string): Promise<User | null> {
     throw new Error('Method not implemented.');
   }
 }

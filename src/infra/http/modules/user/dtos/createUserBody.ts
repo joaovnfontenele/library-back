@@ -12,6 +12,10 @@ export class CreateUserBody {
 
     @IsString()
     @IsNotEmpty()
+    login: string
+
+    @IsString()
+    @IsNotEmpty()
     @MinLength(6)
     password: string
 }

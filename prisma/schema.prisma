@@ -11,8 +11,54 @@ datasource db {
 }
 
 model User {
-  id String @id
-  name String
-  email String @unique
+  id       String @id
+  name     String
+  email    String @unique
+  login    String @unique
   password String
+}
+
+model Site {
+  id    String @id
+  name  String
+  url   String
+  books Book[]
+}
+
+model Status {
+  id          String @id
+  description String
+  Book        Book[]
+}
+
+model Book {
+  id          String    @id
+  site        Site      @relation(fields: [siteId], references: [id])
+  siteId      String
+  status      Status    @relation(fields: [statusId], references: [id])
+  statusId    String
+  title       String
+  description String?
+  chapter     Chapter[]
+  image       String
+  url         String
+}
+
+model Chapter {
+  id          String      @id
+  Book        Book        @relation(fields: [bookId], onDelete: Cascade, references: [id])
+  bookId      String
+  title       String
+  number      Int
+  paragraphs  Paragraph[]
+  url         String
+  nextChapter String
+}
+
+model Paragraph {
+  id        String  @id
+  Chapter   Chapter @relation(fields: [chapterId], onDelete: Cascade, references: [id])
+  chapterId String
+  content   String
+  order     Int
 }

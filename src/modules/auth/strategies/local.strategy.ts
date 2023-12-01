@@ -9,13 +9,13 @@ import { validateUserUseCase } from '../useCases/validateUserUseCase/validateUse
 export class LocalStrategy extends PassportStrategy(Strategy) {
     constructor(private validateUserUseCase: validateUserUseCase) {
         super({
-            usernameField: 'email'
+            usernameField: 'login'
         });
     }
 
-    async validate(email: string, password: string) {
+    async validate(login: string, password: string) {
         return await this.validateUserUseCase.execute({
-            email,
+            login,
             password
         })
     }

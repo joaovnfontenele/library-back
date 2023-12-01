@@ -8,7 +8,7 @@ export class SignInDTOValidateMiddleware implements NestMiddleware {
     async use(req: Request, res: Response, next: NextFunction) {
         const body = req.body
         const signInBody = new SignInBody()
-        signInBody.email = body.email
+        signInBody.login = body.login
         signInBody.password = body.password
         const validations = await validate(signInBody)
 

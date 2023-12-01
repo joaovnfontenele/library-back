@@ -1,4 +1,5 @@
-import { User } from "@prisma/client";
+import { User } from "src/modules/user/entities/User";
+
 
 export class UserViewModel {
     static toHttp({ email, password, name, id }: User) {
