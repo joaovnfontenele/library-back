@@ -8,6 +8,8 @@ import { GetBookUseCase } from "src/modules/book/useCases/getBookUseCase/getBook
 import { GetManyBookUseCase } from "src/modules/book/useCases/getManyUseCase/getManyUseCase";
 import { CreateBookByUrlUseCase } from "src/modules/book/useCases/createBookByUrlUseCase/createBookByUrlUseCase";
 import { WebScrapingModule } from "src/infra/webScraping/webScraping.module";
+import { DownloadEpubUseCase } from "src/modules/book/useCases/downloadEpubUseCase/downloadEpubUseCase";
+import { GetFullBookUseCase } from "src/modules/book/useCases/getFullBookUseCase/getFullBookUseCase";
 
 
 @Module({
@@ -18,7 +20,9 @@ import { WebScrapingModule } from "src/infra/webScraping/webScraping.module";
         DeleteBookUseCase,
         GetBookUseCase,
         GetManyBookUseCase,
-        CreateBookByUrlUseCase
+        CreateBookByUrlUseCase,
+        GetFullBookUseCase,
+        DownloadEpubUseCase,
     ]
 
 })

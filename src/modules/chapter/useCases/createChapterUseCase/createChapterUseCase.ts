@@ -51,8 +51,6 @@ export class CreateChapterUseCase extends UseCase {
             }))
         }
 
-    
-
         return chapter
     }
 

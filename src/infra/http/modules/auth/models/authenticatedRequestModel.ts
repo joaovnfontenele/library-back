@@ -1,7 +1,5 @@
-import { Request } from "express";
 
-
-export class AuthenticatedRequestModel extends Request {
+export class AuthenticatedRequestModel {
     user: {
         id: string
         email: string

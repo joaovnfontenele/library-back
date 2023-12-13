@@ -1,8 +1,6 @@
 import {  IsNotEmpty, IsString, IsUrl } from "class-validator"
 
-export class CreateBookByUrlBody {
-
-
+export class createChapterByUrlBody {
     @IsNotEmpty()
     @IsString()
     @IsUrl()
@@ -10,9 +8,6 @@ export class CreateBookByUrlBody {
 
     @IsNotEmpty()
     @IsString()
-    siteId: string
+    bookId: string
 
-    @IsNotEmpty()
-    @IsString()
-    statusId: string
 }

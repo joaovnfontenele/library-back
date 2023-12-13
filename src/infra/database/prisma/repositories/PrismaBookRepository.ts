@@ -9,7 +9,7 @@ import { PrismaBookMapper } from "../mappers/PrismaBookMapper";
 @Injectable()
 export class PrismaBookRepository implements BookRepository {
     constructor(private prisma: PrismaService) { }
-  
+
 
     async create(book: Book): Promise<void> {
         const siteRow = PrismaBookMapper.toPrisma(book)
@@ -24,10 +24,35 @@ export class PrismaBookRepository implements BookRepository {
         return PrismaBookMapper.toDomain(book)
     }
 
-    async findMany(page: number, perPage: number): Promise<Book[]> {
+    async findFullBook(id: string): Promise<Book | null> {
+        const book = await this.prisma.book.findUnique({
+            where: { id: id }, include: {
+                chapter: {
+                    orderBy: {
+                        number: 'asc'
+                    },
+                    include: {
+                        paragraphs: {
+                            orderBy: {
+                                order: 'asc'
+                            }
+                        }
+                    }
+                }
+            }
+        })
+
+        if (!book) return null
+
+        return PrismaBookMapper.toDomainFullBook(book)
+    }
+
+
+    async findMany(page: number, perPage: number, query?: any): Promise<Book[]> {
         const books = await this.prisma.book.findMany({
-            orderBy:{
-                title:'asc'
+            where: query,
+            orderBy: {
+                title: 'asc'
             },
             take: perPage,
             skip: (page - 1) * perPage
@@ -46,7 +71,7 @@ export class PrismaBookRepository implements BookRepository {
     }
 
     async delete(id: string): Promise<void> {
-        await this.prisma.site.delete({
+        await this.prisma.book.delete({
             where: {
                 id: id
             }
@@ -54,7 +79,7 @@ export class PrismaBookRepository implements BookRepository {
     }
 
 
-   async count(query?: any): Promise<number> {
-       return await  this.prisma.book.count({ where: query })
+    async count(query?: any): Promise<number> {
+        return await this.prisma.book.count({ where: query })
     }
 }

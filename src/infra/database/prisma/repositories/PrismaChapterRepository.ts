@@ -11,27 +11,58 @@ import { PrismaChapterMapper } from "../mappers/PrismaChapterMapper";
 export class PrismaChapterRepository implements ChapterRepository {
     constructor(private prisma: PrismaService) { }
 
-    async create(chapter:Chapter): Promise<void> {
+    async create(chapter: Chapter): Promise<void> {
         const chapterRow = PrismaChapterMapper.toPrisma(chapter)
         await this.prisma.chapter.create({ data: chapterRow })
     }
 
-    findById(id: string): Promise<Chapter | null> {
-        throw new Error("Method not implemented.");
+    async findById(id: string): Promise<Chapter | null> {
+        const chapter = await this.prisma.chapter.findUnique({
+            where: { id: id }, include: {
+                paragraphs: {
+                    orderBy: {
+                        order: "asc"
+                    }
+                }
+            }
+        })
+
+        if (!chapter) return null
+
+        return PrismaChapterMapper.toDomainIncludeParagraphs(chapter)
     }
-    delete(id: string): Promise<void> {
-        throw new Error("Method not implemented.");
+    async delete(id: string): Promise<void> {
+        await this.prisma.chapter.delete({
+            where: {
+                id: id
+            }
+        })
     }
-    save(chapter: Chapter): Promise<void> {
-        throw new Error("Method not implemented.");
+    async save(chapter: Chapter): Promise<void> {
+        const chapterRow = PrismaChapterMapper.toPrisma(chapter)
+        await this.prisma.chapter.update({
+            data: chapterRow,
+            where: {
+                id: chapter.id
+            }
+        })
     }
-    findMany(page: number, perPage: number): Promise<Chapter[]> {
-        throw new Error("Method not implemented.");
+    async findMany(page: number, perPage: number, query?: any): Promise<Chapter[]> {
+        const chapters = await this.prisma.chapter.findMany({
+            where: query,
+            orderBy: {
+                number: 'desc'
+            },
+            take: perPage,
+            skip: (page - 1) * perPage
+        })
+        return chapters.map(PrismaChapterMapper.toDomain)
     }
-    count(query?: any): Promise<number> {
-        throw new Error("Method not implemented.");
+    async count(query?: any): Promise<number> {
+        return await this.prisma.chapter.count({ where: query })
+
     }
-  
+
 
 
 }

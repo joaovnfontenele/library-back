@@ -1,4 +1,4 @@
-import { Body, Controller, Delete, Get, Param, Post, Put, Query } from "@nestjs/common";
+import { Body, Controller, Delete, Get, Param, Post, Put, Query, Res } from "@nestjs/common";
 import { CreateBookBody } from "./dtos/createBookBody";
 import { BookViewModel } from "./viewModel/bookViewModel";
 import { EditBookBody } from "./dtos/editBookBody";
@@ -11,6 +11,10 @@ import { ApiBearerAuth, ApiBody, ApiQuery, ApiTags } from "@nestjs/swagger";
 import { CreateBookByUrlUseCase } from "src/modules/book/useCases/createBookByUrlUseCase/createBookByUrlUseCase";
 import { CreateBookByUrlBody } from "./dtos/createBookByUrlBody";
 import { Public } from "../auth/decorators/isPublic";
+import { GetFullBookUseCase } from "src/modules/book/useCases/getFullBookUseCase/getFullBookUseCase";
+import { FullBookViewModel } from "./viewModel/fullBookViewModel";
+import { DownloadEpubUseCase } from "src/modules/book/useCases/downloadEpubUseCase/downloadEpubUseCase";
+import { Response } from "express";
 
 
 @ApiBearerAuth()
@@ -24,16 +28,20 @@ export class BookController {
         private deleteBookUseCase: DeleteBookUseCase,
         private getBookUseCase: GetBookUseCase,
         private getManyBookUseCase: GetManyBookUseCase,
+        private getFullBookUseCase: GetFullBookUseCase,
+        private downloadEpubUseCase: DownloadEpubUseCase
     ) { }
 
 
     @ApiQuery({ name: 'page', required: false, type: String })
     @ApiQuery({ name: 'perPage', required: false, type: String })
+    @ApiQuery({ name: 'title', required: false, type: String })
     @Get()
-    async getMany(@Query('page') page: string, @Query('perPage') perPage: string) {
+    async getMany(@Query('page') page: string, @Query('perPage') perPage: string, @Query('title') title?: string) {
         const sites = await this.getManyBookUseCase.execute({
             page,
-            perPage
+            perPage,
+            title
         })
         return sites.transformData(BookViewModel.toHttp)
 
@@ -45,6 +53,25 @@ export class BookController {
         const site = await this.getBookUseCase.execute({ bookId })
         return BookViewModel.toHttp(site)
 
+    }
+
+    @Get("full-book/:id")
+    async getFullBook(@Param('id') bookId: string) {
+        const site = await this.getFullBookUseCase.execute({ bookId })
+        return FullBookViewModel.toHttp(site)
+
+    }
+    @Public()
+    @Get("download-epub/:id")
+    async downloadEpub(@Res() res: Response,@Param('id') bookId: string) {
+        const book = await this.getBookUseCase.execute({ bookId })
+        const file = await this.downloadEpubUseCase.execute({ bookId })
+        
+        res.set({
+            'Content-Type': 'application/epub',
+            'Content-Disposition': `attachment; filename=${book?.title?.replaceAll(' ', '-')}.epub`
+          })
+          res.send(file)
     }
 
     @Post()

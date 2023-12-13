@@ -8,4 +8,15 @@ export class ChapterViewModel {
         }
 
     }
+
+    static toHttpInIncludeParagraphs({ id, title, bookId, nextChapter, number, url, paragraphs }: Chapter) {
+
+        const httpParagraphs = paragraphs.map((paragraph)=>{
+            return paragraph.content
+        })
+
+        return {
+            id, title, bookId, nextChapter, number, url,httpParagraphs
+        }
+    }
 }

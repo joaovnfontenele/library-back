@@ -8,6 +8,7 @@ interface ChapterProps {
     number: number
     url: string
     nextChapter: string
+    paragraphs?: Paragraph[]
 }
 
 export class Chapter extends Entities {
@@ -34,6 +35,10 @@ export class Chapter extends Entities {
 
     get nextChapter() {
         return this.props.nextChapter
+    }
+
+    get paragraphs() {
+        return this.props.paragraphs ?? []
     }
 
     set bookId(bookId: string) {

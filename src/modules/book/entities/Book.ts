@@ -1,3 +1,4 @@
+import { Chapter } from "src/modules/chapter/entities/chapter";
 import { Entities } from "src/shared/entities/entities";
 
 interface SiteProps {
@@ -7,6 +8,7 @@ interface SiteProps {
     description: string | null
     image: string
     url: string
+    chapters?: Chapter[]
 }
 
 export class Book extends Entities {
@@ -32,6 +34,10 @@ export class Book extends Entities {
         this.props.siteId = siteId;
     }
 
+    get chapters(){
+        return this.props.chapters
+    }
+
     get statusId() {
         return this.props.statusId;
     }
@@ -40,7 +46,7 @@ export class Book extends Entities {
         this.props.statusId = statusId;
     }
 
-    get description(): string| null {
+    get description(): string | null {
         return this.props.description;
     }
 
