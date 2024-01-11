@@ -26,7 +26,8 @@ export class PrismaBookRepository implements BookRepository {
 
     async findFullBook(id: string): Promise<Book | null> {
         const book = await this.prisma.book.findUnique({
-            where: { id: id }, include: {
+            where: { id: id },
+             include: {
                 chapter: {
                     orderBy: {
                         number: 'asc'

@@ -1,4 +1,3 @@
-
 import { Book as BookRow } from "@prisma/client";
 import { Book } from "src/modules/Book/entities/Book";
 import { Chapter } from "src/modules/chapter/entities/chapter";

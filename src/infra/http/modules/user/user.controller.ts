@@ -3,11 +3,13 @@ import { CreateUserUseCase } from "src/modules/user/useCases/createUserUseCase/c
 import { CreateUserBody } from "./dtos/createUserBody";
 import { UserViewModel } from "./viewModel/userViewMOdel";
 import { ApiTags } from "@nestjs/swagger";
+import { Public } from "../auth/decorators/isPublic";
 
 @ApiTags('users')
 @Controller('users')
 export class UserController {
     constructor(private createUserUseCase: CreateUserUseCase) { }
+    @Public()
     @Post()
     async createUser(@Body() body: CreateUserBody) {
         const { email, password, name, login } = body
